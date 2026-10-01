@@ -28,7 +28,7 @@ char *hversion= "\t\t tree v2.3.2 %s 1996 - 2026 by Steve Baker and Thomas Moore
 struct Flags flag;
 struct listingcalls lc;
 
-int pattern = 0, maxpattern = 0, ipattern = 0, maxipattern = 0;
+int pattern = 0, maxpattern = 0, ipattern = 0, maxipattern = 0, stat_depth = 0;
 char **patterns = NULL, **ipatterns = NULL;
 
 char *host = NULL, *title = "Directory Tree", *sp = " ", *_nl = "\n";
@@ -410,6 +410,18 @@ int main(int argc, char **argv)
 	      flag.s = flag.du = (opt_toggle? !flag.du : true);
 	      break;
 	    }
+      if (!strcmp("--stat", argv[i])) {
+       j = strlen(argv[i]) - 1;
+       flag.stat = (opt_toggle ? !flag.stat : true);
+        break;
+      }
+      if (!strcmp("--size", argv[i])) {
+         j = strlen(argv[i]) - 1;
+          flag.size = true;
+          flag.s = true;
+          flag.du = true;
+    break;
+      }
 	    if (!strcmp("--prune",argv[i])) {
 	      j = strlen(argv[i])-1;
 	      flag.prune = (opt_toggle? !flag.prune : true);
@@ -670,7 +682,7 @@ void usage(int n)
 	"\t[\b--gitfile\r[\b=\r]\ffile\r] [\b--matchdirs\r] [\b--metafirst\r] [\b--ignore-case\r]\n"
 	"\t[\b--nolinks\r] [\b--hintro\r[\b=\r]\ffile\r] [\b--houtro\r[\b=\r]\ffile\r] [\b--inodes\r] [\b--device\r]\n"
 	"\t[\b--sort\r[\b=\r]\fname\r] [\b--dirsfirst\r] [\b--filesfirst\r] [\b--filelimit\r[\b=\r]\f#\r] [\b--si\r]\n"
-	"\t[\b--du\r] [\b--prune\r] [\b--charset\r[\b=\r]\fX\r] [\b--timefmt\r[\b=\r]\fformat\r] [\b--fromfile\r]\n"
+	"\t[\b--du\r][\b--stat\r][\b--prune\r] [\b--charset\r[\b=\r]\fX\r] [\b--timefmt\r[\b=\r]\fformat\r] [\b--fromfile\r]\n"
 	"\t[\b--fromtabfile\r] [\b--fflinks\r] [\b--info\r] [\b--infofile\r[\b=\r]\ffile\r] [\b--noreport\r]\n"
 	"\t[\b--hyperlink\r] [\b--scheme\r[\b=\r]\fschema\r] [\b--authority\r[\b=\r]\fhost\r] [\b--opt-toggle\r]\n"
         "\t[\b--compress\r[\b=\r]\f#\r] [\b--condense\r] [\b--version\r] [\b--help\r]"
@@ -717,6 +729,8 @@ void usage(int n)
 	"  \b-h\r            Print the size in a more human readable way.\n"
 	"  \b--si\r          Like \b-h\r, but use in SI units (powers of 1000).\n"
 	"  \b--du\r          Compute size of directories by their contents.\n"
+  "  \b--stat\r        List number of directories, files and maximum depth.\n"
+  "  \b--size\r        Print size of each file and directory.\n"
 	"  \b-D\r            Print the date of last modification or (-c) status change.\n"
 	"  \b--timefmt\r \ffmt\r Print and format time according to the format \ffmt\r.\n"
 	"  \b-F\r            Appends '\b/\r', '\b=\r', '\b*\r', '\b@\r', '\b|\r' or '\b>\r' as per \bls -F\r.\n"

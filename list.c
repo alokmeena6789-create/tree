@@ -28,7 +28,6 @@ extern size_t htmldirlen;
 static char errbuf[256];
 char realbasepath[PATH_MAX];
 size_t dirpathoffset = 0;
-
 /**
  * Maybe TODO: Refactor the listing calls / when they are called.  A more thorough
  * analysis of the different outputs is required.  This all is not as clean as I
@@ -131,14 +130,24 @@ void emit_tree(char **dirname, bool needfulltree)
     if (inf != NULL) inf = pop_infostack();
   }
 
-  if (!flag.noreport) lc.report(tot);
+  if (!flag.noreport)
+    lc.report(tot);
 
-  lc.outtro();
+if (flag.stat) {
+    fprintf(outfile, "\nStatistics:\n");
+    fprintf(outfile, "Directories: %ld\n", (long)tot.dirs);
+    fprintf(outfile, "Files: %ld\n", (long)tot.files);
+    fprintf(outfile, "Maximum depth: %ld\n", (long)stat_depth);
+}
+
+lc.outtro();
 }
 
 struct totals listdir(char *dirname, struct _info **dir, int lev, dev_t dev, bool hasfulltree)
 {
   struct totals tot = {0}, subtotal;
+  if (lev > stat_depth)
+    stat_depth = lev;
   struct ignorefile *ig = NULL;
   struct infofile *inf = NULL;
   struct _info **subdir = NULL;
